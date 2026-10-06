@@ -41,9 +41,15 @@ class DummyTrfBlock(nn.Module):
 class DummyLayerNorm(nn.Module):
     def __init__(self,normalized_shape, eps=1e-5):
         super().__init__()
+        self.esp = eps
+        self.scale = nn.Parameter(torch.ones(normalized_shape))
+        self.bias = nn.Parameter(torch.zeros(normalized_shape))
 
     def forward(self,x):
-        return self.layer_norm(x)
+        mean = x.mean(dim=-1, keepdim=True)
+        var = x.var(dim=-1, keepdim=True, unbiased=False)
+        x_norm = (x - mean) /torch.sqrt(var + self.esp)
+        return self.scale * x_norm + self.bias
 
 
 import tiktoken
