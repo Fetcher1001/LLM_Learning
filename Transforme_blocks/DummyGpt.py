@@ -46,12 +46,6 @@ class DummyLayerNorm(nn.Module):
 
     def forward(self,x):
         mean = x.mean(dim=-1, keepdim=True)
-        var = x.var(dim=-1, keepdim=True, unbiased=False)
-        x_norm = (x - mean) /torch.sqrt(var + self.esp)
-        return self.scale * x_norm + self.bias
-
-
-import tiktoken
 tokenizer = tiktoken.get_encoding("gpt2")
 batch = []
 txt1 = "Every effort moves you"
